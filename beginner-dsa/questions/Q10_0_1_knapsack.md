@@ -1,14 +1,33 @@
-# Q10: 0/1 Knapsack
+public class Knapsack {
 
-Given weights and values of `n` items, put these items in a knapsack of capacity `W` to get the maximum total value in the knapsack.
+    // Function to solve the 0/1 Knapsack problem
+    public static int knapSack(int W, int[] weights, int[] values, int n) {
+        // dp[i][w] will store the maximum value for first i items with capacity w
+        int[][] dp = new int[n + 1][W + 1];
 
-In other words, given two integer arrays `val[0..n-1]` and `wt[0..n-1]` which represent values and weights associated with `n` items respectively. Also given an integer `W` which represents knapsack capacity, find out the maximum value subset of `val[]` such that sum of the weights of this subset is smaller than or equal to `W`. You cannot break an item, either pick the complete item or don’t pick it (0-1 property).
+        // Build the dp table
+        for (int i = 0; i <= n; i++) {
+            for (int w = 0; w <= W; w++) {
+                if (i == 0 || w == 0)
+                    dp[i][w] = 0; // Base case: no items or capacity 0
+                else if (weights[i - 1] <= w)
+                    dp[i][w] = Math.max(
+                        values[i - 1] + dp[i - 1][w - weights[i - 1]], // Include item
+                        dp[i - 1][w]                                  // Exclude item
+                    );
+                else
+                    dp[i][w] = dp[i - 1][w]; // Item too heavy to include
+            }
+        }
 
-**Example:**
+        return dp[n][W]; // Maximum value achievable with n items and capacity W
+    }
 
-**Input:**
-val = [60, 100, 120]
-wt = [10, 20, 30]
-W = 50
+    // Driver code to test the function
+    public static void main(String[] args) {
+        int[] values = {60, 100, 120}; // values of items
+        int[] weights = {10, 20, 30};  // weights of items
+        int W = 50;                    // Knapsack capacity
+        int n = values.length;
 
-**Output:** 220
+        int maxValue = knapSack(W, weights, values, n);
