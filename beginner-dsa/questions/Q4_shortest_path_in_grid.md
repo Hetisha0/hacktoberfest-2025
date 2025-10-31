@@ -1,12 +1,42 @@
-# Q4: Shortest Path in a Grid
+import java.util.*;
 
-Given an `m x n` grid where each cell can be a wall, an open space, or the start/end point, find the shortest path from the start to the end.
+public class ShortestPathInGrid {
+    static class Cell {
+        int row, col, dist;
+        Cell(int row, int col, int dist) {
+            this.row = row;
+            this.col = col;
+            this.dist = dist;
+        }
+    }
 
-You can move up, down, left, or right. You cannot move through walls.
+    public int shortestPath(int[][] grid, int[] start, int[] end) {
+        int m = grid.length;
+        int n = grid[0].length;
+        boolean[][] visited = new boolean[m][n];
+        int[] dr = { -1, 1, 0, 0 };
+        int[] dc = { 0, 0, -1, 1 };
 
-**Input:**
-*   An `m x n` grid.
-*   The coordinates of the start and end points.
+        Queue<Cell> q = new LinkedList<>();
+        q.offer(new Cell(start[0], start[1], 0));
+        visited[start[0]][start[1]] = true;
 
-**Output:**
-*   The length of the shortest path. If no path exists, return -1.
+        while (!q.isEmpty()) {
+            Cell curr = q.poll();
+            if (curr.row == end[0] && curr.col == end[1]) {
+                return curr.dist;
+            }
+            for (int d = 0; d < 4; d++) {
+                int nr = curr.row + dr[d];
+                int nc = curr.col + dc[d];
+                if (nr >= 0 && nr < m && nc >= 0 && nc < n &&
+                    !visited[nr][nc] && grid[nr][nc] == 0) // assuming 0 is open, 1 is wall
+                {
+                    visited[nr][nc] = true;
+                    q.offer(new Cell(nr, nc, curr.dist + 1));
+                }
+            }
+        }
+        return -1;
+    }
+}
