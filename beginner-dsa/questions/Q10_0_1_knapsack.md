@@ -1,14 +1,26 @@
 # Q10: 0/1 Knapsack
 
-Given weights and values of `n` items, put these items in a knapsack of capacity `W` to get the maximum total value in the knapsack.
+def knapsack(weights, values, W):
+    n = len(values)
+    # dp[i][w] will store the max value for i items and capacity w
+    dp = [[0 for _ in range(W + 1)] for _ in range(n + 1)]
 
-In other words, given two integer arrays `val[0..n-1]` and `wt[0..n-1]` which represent values and weights associated with `n` items respectively. Also given an integer `W` which represents knapsack capacity, find out the maximum value subset of `val[]` such that sum of the weights of this subset is smaller than or equal to `W`. You cannot break an item, either pick the complete item or don’t pick it (0-1 property).
+    # Build table dp[][] in bottom-up manner
+    for i in range(1, n + 1):
+        for w in range(1, W + 1):
+            if weights[i - 1] <= w:
+                # Include item i-1
+                dp[i][w] = max(values[i - 1] + dp[i - 1][w - weights[i - 1]],
+                               dp[i - 1][w])
+            else:
+                # Cannot include item i-1
+                dp[i][w] = dp[i - 1][w]
 
-**Example:**
+    return dp[n][W]
 
-**Input:**
-val = [60, 100, 120]
-wt = [10, 20, 30]
-W = 50
+# Example usage:
+weights = [2, 3, 4, 5]
+values = [3, 4, 5, 6]
+W = 5
 
-**Output:** 220
+print("Maximum value in Knapsack =", knapsack(weights, values, W))
